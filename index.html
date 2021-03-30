@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		body {
+			background-color: black;
+		}
+		.dot {
+		  padding: 100px;
+		  text-align: center;
+		}
+		.one {
+			background-color: black;
+		  border-radius: 50%;
+		}
+		.two {
+			background-color: black;
+			color: white;
+		}
+		.three {
+		  border-radius: 50%;
+		}
+		.center {
+		  margin: 200px auto;
+		  width: 50%;
+		  padding: 10px;
+		}
+		#demo {
+			background: black;
+		}
+	</style>
+	<script type="text/javascript">
+		function modify_color(index, increase = true) {
+			var col=document.getElementById("demo");
+            console.log(col.style.background);
+            let bck = col.style.background
+            if (bck == "") {
+            	bck = "rgb(0, 0, 0)";
+            }
+            let nums = bck.slice(4, -1);
+            console.log(nums);
+            let blah = nums.split(", ");
+            if (increase) {
+	            blah[index] = parseInt(blah[index], 10) + 10;
+	        } else {
+	        	blah[index] = parseInt(blah[index], 10) - 10;
+	        }
+            let res = "rgb(" + blah[0] + ", " + blah[1] + ", " + blah[2] + ")";
+			col.style.background = res;
+			console.log(res);
+		}
+
+		function sleep(ms) {
+			console.log('sleeping');
+      		return new Promise(resolve => setTimeout(resolve, ms));
+   		}
+
+		screens = [
+			'rgb(255, 0, 0)',
+			'rgb(0, 255, 0)',
+			'rgb(0, 0, 255)'
+		];
+
+		current_screen = 0;
+
+		document.onkeydown = async function(e) {
+		    switch (e.keyCode) {
+		        case 103:
+		            modify_color(0);
+		            break;
+		        case 100:
+		        	modify_color(0, false);
+		            break;
+		        case 104:
+		            modify_color(1);
+		            break;
+		        case 101:
+		            modify_color(1, false);
+		            break;
+		        case 105:
+		            modify_color(2);
+		            break;
+		        case 102:
+		            modify_color(2, false);
+		            break;
+		        case 81:
+		        	current_screen++;
+		        	var demo=document.getElementById("demo");
+		        	demo.style.background = 'rgb(0, 0, 0)';
+		        	var orig=document.getElementById("orig");
+		        	orig.style.background = screens[current_screen];
+		        	await sleep(5000);
+		        	orig.style.background = 'rgb(0, 0, 0)';
+		        	break;
+    		}
+		};
+	</script>
+</head>
+<body>
+	<div class="center">
+		<span class="dot one" id="orig"></span>
+		<span class="dot two">+</span>
+		<span class="dot three" id="demo"></span>
+	</div>
+</body>
+</html>
