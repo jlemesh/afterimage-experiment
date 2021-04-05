@@ -2,19 +2,19 @@
 <html>
 <head>
 	<style>
-		body {
-			background-color: black;
+		#body {
+			background-color: rgb(0, 0, 0);
 		}
 		.dot {
-		  padding: 100px;
+		  padding: 2cm;
 		  text-align: center;
 		}
 		.one {
-			background-color: black;
+			background-color: rgb(0, 0, 0);
 		  border-radius: 50%;
 		}
 		.two {
-			background-color: black;
+			background-color: rgb(0, 0, 0);
 			color: white;
 		}
 		.three {
@@ -25,82 +25,56 @@
 		  width: 50%;
 		  padding: 10px;
 		}
-		#demo {
-			background: black;
+		#answer {
+			background: rgb(0, 0, 0);
+		}
+		#wipeout {
+			z-index: 100;
+			position: absolute;
+			height: 100%;
+			width:100%;
+			background-image: url(random-squares.jpg);
+			top: 0;
+			display: none;
+		}
+		#instruction {
+			z-index: 100;
+			position: absolute;
+			height: 100%;
+			width:100%;
+			background-color: grey;
+			top: 0;
+			text-align: center;
+			font-size: 25px;
+			padding-top: 150px;
+			font-weight: bold;
+			color: white;
+		}
+		#results {
+			z-index: 103;
+			position: absolute;
+			height: 100%;
+			width:100%;
+			background-color: grey;
+			top: 0;
+			text-align: center;
+			font-size: 25px;
+			padding-top: 150px;
+			font-weight: bold;
+			color: white;
+			display: none;
 		}
 	</style>
-	<script type="text/javascript">
-		function modify_color(index, increase = true) {
-			var col=document.getElementById("demo");
-            console.log(col.style.background);
-            let bck = col.style.background
-            if (bck == "") {
-            	bck = "rgb(0, 0, 0)";
-            }
-            let nums = bck.slice(4, -1);
-            console.log(nums);
-            let blah = nums.split(", ");
-            if (increase) {
-	            blah[index] = parseInt(blah[index], 10) + 10;
-	        } else {
-	        	blah[index] = parseInt(blah[index], 10) - 10;
-	        }
-            let res = "rgb(" + blah[0] + ", " + blah[1] + ", " + blah[2] + ")";
-			col.style.background = res;
-			console.log(res);
-		}
-
-		function sleep(ms) {
-			console.log('sleeping');
-      		return new Promise(resolve => setTimeout(resolve, ms));
-   		}
-
-		screens = [
-			'rgb(255, 0, 0)',
-			'rgb(0, 255, 0)',
-			'rgb(0, 0, 255)'
-		];
-
-		current_screen = 0;
-
-		document.onkeydown = async function(e) {
-		    switch (e.keyCode) {
-		        case 103:
-		            modify_color(0);
-		            break;
-		        case 100:
-		        	modify_color(0, false);
-		            break;
-		        case 104:
-		            modify_color(1);
-		            break;
-		        case 101:
-		            modify_color(1, false);
-		            break;
-		        case 105:
-		            modify_color(2);
-		            break;
-		        case 102:
-		            modify_color(2, false);
-		            break;
-		        case 81:
-		        	current_screen++;
-		        	var demo=document.getElementById("demo");
-		        	demo.style.background = 'rgb(0, 0, 0)';
-		        	var orig=document.getElementById("orig");
-		        	orig.style.background = screens[current_screen];
-		        	await sleep(5000);
-		        	orig.style.background = 'rgb(0, 0, 0)';
-		        	break;
-    		}
-		};
-	</script>
+	<script type="text/javascript" src="index.js"></script>
 </head>
-<body>
+<body id="body">
+	<div id="instruction"><p>Your instruction text here</p><p>Press Enter to start</p></div>
+	<div id="wipeout"></div>
 	<div class="center">
-		<span class="dot one" id="orig"></span>
-		<span class="dot two">+</span>
-		<span class="dot three" id="demo"></span>
+		<span class="dot one" id="question"></span>
+		<span class="dot two" id="plus">+</span>
+		<span class="dot three" id="answer"></span>
 	</div>
+	<div id="results"></div>
 </body>
 </html>
