@@ -1,20 +1,26 @@
 // rechneronline.de/sehwinkel/angular-diameter.php 4.196 cm 50 cm 8 l.
 // rechneronline.de/sehwinkel/angular-diameter.php 4.628 cm 50 cm 5.3 l.
 
-const SHOW_TIME = 3000;
-const WIPE_TIME = 2000;
+const SHOW_TIME = 30000;
+const WIPE_TIME = 5000;
 const PAUSE_TIME = 1000;
-
-const CHANGE_STEP = 5;
 
 const SCREENS = [
 	'rgb(255, 0, 0)',
+	'rgb(255, 0, 0)',
+	'rgb(0, 255, 0)',
 	'rgb(0, 255, 0)',
 	'rgb(0, 0, 255)',
+	'rgb(0, 0, 255)',
+	'rgb(255, 255, 0)',
 	'rgb(255, 255, 0)',
 	'rgb(0, 255, 255)',
+	'rgb(0, 255, 255)',
+	'rgb(255, 0, 255)',
 	'rgb(255, 0, 255)',
 	'rgb(255, 126, 0)',
+	'rgb(255, 126, 0)',
+	'rgb(0, 255, 126)',
 	'rgb(0, 255, 126)'
 ];
 
@@ -23,6 +29,8 @@ const PROGRAM = [...SCREENS, ...SCREENS];
 const BLACK = 'rgb(0, 0, 0)';
 const WHITE = 'rgb(255, 255, 255)';
 
+const CHANGE_STEP = 10;
+
 const CONTROLLER = new AbortController();
 
 var background_color = BLACK;
@@ -30,6 +38,60 @@ var background_color = BLACK;
 var answers = [];
 
 var current_screen = 0;
+
+function color_forward() {
+	var answer = document.getElementById("answer");
+
+	let bck = answer.style.background
+
+	if (bck == "") {
+		bck = "rgb(0, 0, 0)";
+	}
+
+	let nums = bck.slice(4, -1);
+	let blah = nums.split(", ");
+
+	if (blah[0] < 255 && blah[1] == 0 && (blah[2] == 0 || blah[2] >= 255))
+		modify_color(0);
+	if (blah[0] > 0 && blah[1] >= 255 && blah[2] == 0)
+		modify_color(0, false);
+	if (blah[0] >= 255 && blah[1] < 255 && blah[2] == 0)
+		modify_color(1);
+	if (blah[0] == 0 && blah[1] > 0 && blah[2] >= 255) 
+		modify_color(1, false);
+	if (blah[0] == 0 && blah[1] >= 255 && blah[2] < 255)
+		modify_color(2);
+	if (blah[0] >= 255 && blah[1] == 0 && blah[2] > 0)
+		modify_color(2, false);
+	return;
+}
+
+function color_backward() {
+	var answer = document.getElementById("answer");
+
+	let bck = answer.style.background
+
+	if (bck == "") {
+		bck = "rgb(0, 0, 0)";
+	}
+
+	let nums = bck.slice(4, -1);
+	let blah = nums.split(", ");
+
+	if (blah[0] >= 255 && blah[1] == 0 && blah[2] < 255)
+		modify_color(2);
+	if (blah[0] > 0 && blah[1] == 0 && blah[2] >= 255)
+		modify_color(0, false);
+	if (blah[0] == 0 && blah[1] < 255 && blah[2] >= 255)
+		modify_color(1);
+	if (blah[0] == 0 && blah[1] >= 255 && blah[2] > 0) 
+		modify_color(2, false);
+	if (blah[0] < 255 && blah[1] >= 255 && blah[2] == 0)
+		modify_color(0);
+	if (blah[0] >= 255 && blah[1] > 0 && blah[2] == 0)
+		modify_color(1, false);
+	return;
+}
 
 function modify_color(index, increase = true, change_step = CHANGE_STEP) {
 	var answer = document.getElementById("answer");
@@ -50,6 +112,7 @@ function modify_color(index, increase = true, change_step = CHANGE_STEP) {
 	}
 
 	let res = "rgb(" + blah[0] + ", " + blah[1] + ", " + blah[2] + ")";
+	console.log(res);
 	answer.style.background = res;
 }
 
@@ -59,7 +122,7 @@ function modify_color_inverted(index1, index2, increase = true, change_step = CH
 	let bck = answer.style.background
 
 	if (bck == "") {
-		bck = "rgb(255, 255, 255";
+		bck = "rgb(255, 255, 255)";
 	}
 
 	let nums = bck.slice(4, -1);
@@ -78,7 +141,7 @@ function modify_color_inverted(index1, index2, increase = true, change_step = CH
 }
 
 function sleep(ms) {
-	console.log('sleeping...');
+	console.log('sleeping...' + ms);
 
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -86,54 +149,18 @@ function sleep(ms) {
 function numpads(e) {
 	var is_black = background_color == BLACK;
 	console.log('Is black: ' + is_black);
+	console.log('Key: ' + e.keyCode);
 
-	if (is_black) {
-		switch (e.keyCode) {
-			case 103:
-			    modify_color(0);
-			    break;
-			case 100:
-				modify_color(0, false);
-			    break;
-			case 104:
-			    modify_color(1);
-			    break;
-			case 101:
-			    modify_color(1, false);
-			    break;
-			case 105:
-			    modify_color(2);
-			    break;
-			case 102:
-			    modify_color(2, false);
-			    break;
-			default:
-				return;
-		};
-	} else {
-		switch (e.keyCode) {
-			case 103:
-			    modify_color_inverted(1, 2, false);
-			    break;
-			case 100:
-				modify_color_inverted(1, 2);
-			    break;
-			case 104:
-			    modify_color_inverted(0, 2, false);
-			    break;
-			case 101:
-			    modify_color_inverted(0, 2);
-			    break;
-			case 105:
-			    modify_color_inverted(0, 1, false);
-			    break;
-			case 102:
-			    modify_color_inverted(0, 1);
-			    break;
-			default:
-				return;
-		};
-	}
+	switch (e.keyCode) {
+		case 38:
+		    color_forward();
+		    break;
+		case 40:
+			color_backward();
+		    break;
+		default:
+			return;
+	};
 }
 
 async function q_key(e) {
@@ -185,6 +212,7 @@ async function q_key(e) {
     	await sleep(SHOW_TIME);
 
     	question.style.background = background_color;
+    	answer.style.background = PROGRAM[current_screen];
 
     	current_screen++;
 	}
@@ -208,6 +236,7 @@ async function enter_key(e) {
     await sleep(SHOW_TIME);
 
     question.style.background = background_color;
+    answer.style.background = PROGRAM[current_screen];
 
     current_screen++;
 }
