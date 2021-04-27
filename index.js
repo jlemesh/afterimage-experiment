@@ -6,25 +6,21 @@ const WIPE_TIME = 5000;
 const PAUSE_TIME = 1000;
 
 const SCREENS = [
-	'rgb(255, 0, 0)',
-	'rgb(255, 0, 0)',
-	'rgb(0, 255, 0)',
-	'rgb(0, 255, 0)',
-	'rgb(0, 0, 255)',
-	'rgb(0, 0, 255)',
-	'rgb(255, 255, 0)',
-	'rgb(255, 255, 0)',
-	'rgb(0, 255, 255)',
-	'rgb(0, 255, 255)',
-	'rgb(255, 0, 255)',
-	'rgb(255, 0, 255)',
-	'rgb(255, 126, 0)',
-	'rgb(255, 126, 0)',
-	'rgb(0, 255, 126)',
-	'rgb(0, 255, 126)'
+	'rgb(255,0,0)',
+	'rgb(0,255,0)',
+	'rgb(0,0,255)',
+	'rgb(255,255,0)',
+	'rgb(0,255,182)',
+	'rgb(55,0,152)',
+	'rgb(255,164,0)',
+	'rgb(0,170,255)',
+	'rgb(176,255,0)',
+	'rgb(255,0,255)',
+	'rgb(0,255,255)',
+	'rgb(158,0,255)'
 ];
 
-const PROGRAM = [...SCREENS, ...SCREENS];
+const PROGRAM = [...SCREENS, ...SCREENS, ...SCREENS, ...SCREENS];
 
 const BLACK = 'rgb(0, 0, 0)';
 const WHITE = 'rgb(255, 255, 255)';
@@ -38,6 +34,8 @@ var background_color = BLACK;
 var answers = [];
 
 var current_screen = 0;
+
+var stage = 1;
 
 function color_forward() {
 	var answer = document.getElementById("answer");
@@ -186,7 +184,40 @@ async function q_key(e) {
 		return;
 	}
 
-	if (current_screen == PROGRAM.length / 2) {
+	if (current_screen == PROGRAM.length / 4) {
+		stage = 2;
+		background_color = WHITE;
+
+		body.style.background = WHITE;
+		question.style.background = WHITE;
+		plus.style.background = WHITE;
+		plus.style.color = BLACK;
+	} else if (current_screen == PROGRAM.length / 2) {
+		stage = 3;
+		background_color = BLACK;
+
+		body.style.background = BLACK;
+		question.style.background = BLACK;
+		plus.style.background = BLACK;
+		plus.style.color = WHITE;
+	} else if (current_screen == PROGRAM.length / 4 * 3) {
+		stage = 4;
+		background_color = WHITE;
+
+		body.style.background = WHITE;
+		question.style.background = WHITE;
+		plus.style.background = WHITE;
+		plus.style.color = BLACK;
+	}
+
+	if (stage == 3) {
+		background_color = BLACK;
+
+		body.style.background = BLACK;
+		question.style.background = BLACK;
+		plus.style.background = BLACK;
+		plus.style.color = WHITE;
+	} else if (stage == 4) {
 		background_color = WHITE;
 
 		body.style.background = WHITE;
@@ -212,6 +243,23 @@ async function q_key(e) {
     	await sleep(SHOW_TIME);
 
     	question.style.background = background_color;
+
+    	if (stage == 3) {
+    		background_color = WHITE;
+
+			body.style.background = WHITE;
+			question.style.background = WHITE;
+			plus.style.background = WHITE;
+			plus.style.color = BLACK;
+    	} else if (stage == 4) {
+    		background_color = BLACK;
+
+			body.style.background = BLACK;
+			question.style.background = BLACK;
+			plus.style.background = BLACK;
+			plus.style.color = WHITE;
+    	}
+
     	answer.style.background = PROGRAM[current_screen];
 
     	current_screen++;
