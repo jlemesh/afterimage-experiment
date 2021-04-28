@@ -7,16 +7,40 @@ const PAUSE_TIME = 1000;
 
 const SCREENS = [
 	'rgb(255,0,0)',
+	'rgb(255,0,0)',
+	'rgb(255,0,0)',
+	'rgb(0,255,0)',
+	'rgb(0,255,0)',
 	'rgb(0,255,0)',
 	'rgb(0,0,255)',
+	'rgb(0,0,255)',
+	'rgb(0,0,255)',
+	'rgb(255,255,0)',
+	'rgb(255,255,0)',
 	'rgb(255,255,0)',
 	'rgb(0,255,182)',
+	'rgb(0,255,182)',
+	'rgb(0,255,182)',
+	'rgb(255,0,152)',
+	'rgb(255,0,152)',
 	'rgb(255,0,152)',
 	'rgb(255,164,0)',
+	'rgb(255,164,0)',
+	'rgb(255,164,0)',
+	'rgb(0,170,255)',
+	'rgb(0,170,255)',
 	'rgb(0,170,255)',
 	'rgb(176,255,0)',
+	'rgb(176,255,0)',
+	'rgb(176,255,0)',
+	'rgb(255,0,255)',
+	'rgb(255,0,255)',
 	'rgb(255,0,255)',
 	'rgb(0,255,255)',
+	'rgb(0,255,255)',
+	'rgb(0,255,255)',
+	'rgb(158,0,255)',
+	'rgb(158,0,255)',
 	'rgb(158,0,255)'
 ];
 
@@ -144,25 +168,62 @@ function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function numpads(e) {
+function controls(e) {
 	var is_black = background_color == BLACK;
 	console.log('Is black: ' + is_black);
 	console.log('Key: ' + e.keyCode);
 
-	switch (e.keyCode) {
-		case 38:
-		    color_forward();
-		    break;
-		case 40:
-			color_backward();
-		    break;
-		default:
-			return;
-	};
+	if (is_black) {
+		switch (e.keyCode) {
+			case 81:
+			    modify_color(0);
+			    break;
+			case 65:
+				modify_color(0, false);
+			    break;
+			case 87:
+			    modify_color(1);
+			    break;
+			case 83:
+			    modify_color(1, false);
+			    break;
+			case 69:
+			    modify_color(2);
+			    break;
+			case 68:
+			    modify_color(2, false);
+			    break;
+			default:
+				return;
+		};
+	} else {
+		switch (e.keyCode) {
+			case 81:
+			    modify_color_inverted(1, 2, false);
+			    break;
+			case 65:
+				modify_color_inverted(1, 2);
+			    break;
+			case 87:
+			    modify_color_inverted(0, 2, false);
+			    break;
+			case 83:
+			    modify_color_inverted(0, 2);
+			    break;
+			case 69:
+			    modify_color_inverted(0, 1, false);
+			    break;
+			case 68:
+			    modify_color_inverted(0, 1);
+			    break;
+			default:
+				return;
+		};
+	}
 }
 
-async function q_key(e) {
-	if (e.keyCode != 81) {
+async function next_key(e) {
+	if (e.keyCode != 32) {
 		return;
 	}
 
@@ -260,13 +321,13 @@ async function q_key(e) {
 			plus.style.color = WHITE;
     	}
 
-    	answer.style.background = PROGRAM[current_screen];
+    	answer.style.background = background_color;
 
     	current_screen++;
 	}
 }
 
-async function enter_key(e) {
+async function start_key(e) {
 	if (e.keyCode != 13) {
 		return;
 	}
@@ -284,7 +345,7 @@ async function enter_key(e) {
     await sleep(SHOW_TIME);
 
     question.style.background = background_color;
-    answer.style.background = PROGRAM[current_screen];
+    answer.style.background = background_color;
 
     current_screen++;
 }
@@ -297,6 +358,6 @@ function dump_globals() {
 
 console.log(PROGRAM.join(' '));
 
-document.addEventListener('keydown', numpads);
-document.addEventListener('keydown', q_key, { signal: CONTROLLER.signal });
-document.addEventListener('keydown', enter_key, { once: true });
+document.addEventListener('keydown', controls);
+document.addEventListener('keydown', next_key, { signal: CONTROLLER.signal });
+document.addEventListener('keydown', start_key, { once: true });
